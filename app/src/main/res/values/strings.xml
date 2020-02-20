@@ -7,4 +7,14 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
+    <string name="friendName">Friend Name</string>
+    <string name="clumsiness">Clumsiness</string>
+    <string name="awesome">Awesome</string>
+    <string name="gymFrequency">Gym Frequency</string>
+    <string name="trust">Trustworthiness</string>
+    <string name="moneyOwed">Money Owed</string>
+    <string name="clumsinessMin">1</string>
+    <string name="clumsinessMax">10</string>
+    <string name="gymFrequencyMin">0</string>
+    <string name="gymFrequencyMax">7</string>
 </resources>
