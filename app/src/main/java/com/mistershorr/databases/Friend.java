@@ -1,6 +1,9 @@
 package com.mistershorr.databases;
 
-public class Friend {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Friend implements Parcelable,Comparable<Friend> {
     private int cumsiness;
     private double gymFrequency;
     private boolean isAwesome;
@@ -10,9 +13,26 @@ public class Friend {
     public Friend(){}
 
 
+    protected Friend(Parcel in) {
+        cumsiness = in.readInt();
+        gymFrequency = in.readDouble();
+        isAwesome = in.readByte() != 0;
+        moneyOwed = in.readDouble();
+        name = in.readString();
+        trustWorthiness = in.readInt();
+    }
 
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
 
-
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 
     //Getters and Setters
     public int getTrustWorthiness() {
@@ -27,8 +47,8 @@ public class Friend {
     public void setName(String name) {
         this.name = name;
     }
-    public double getMoneyOwed() {
-        return moneyOwed;
+    public String getMoneyOwed() {
+        return moneyOwed+"";
     }
     public void setMoneyOwed(double moneyOwed) {
         this.moneyOwed = moneyOwed;
@@ -50,5 +70,25 @@ public class Friend {
     }
     public void setCumsiness(int cumsiness) {
         this.cumsiness = cumsiness;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(cumsiness);
+        parcel.writeDouble(gymFrequency);
+        parcel.writeByte((byte) (isAwesome ? 1 : 0));
+        parcel.writeDouble(moneyOwed);
+        parcel.writeString(name);
+        parcel.writeInt(trustWorthiness);
+    }
+
+    @Override
+    public int compareTo(Friend friend) {
+        return 0;
     }
 }
