@@ -10,6 +10,9 @@ public class Friend implements Parcelable,Comparable<Friend> {
     private double moneyOwed;
     private String name;
     private int trustWorthiness;
+    //backendless specific fields
+    private String objectId;
+    private String ownerId;
     public Friend(){}
 
 
@@ -20,6 +23,8 @@ public class Friend implements Parcelable,Comparable<Friend> {
         moneyOwed = in.readDouble();
         name = in.readString();
         trustWorthiness = in.readInt();
+        objectId = in.readString();
+        ownerId = in.readString();
     }
 
     public static final Creator<Friend> CREATOR = new Creator<Friend>() {
@@ -71,6 +76,18 @@ public class Friend implements Parcelable,Comparable<Friend> {
     public void setCumsiness(int cumsiness) {
         this.cumsiness = cumsiness;
     }
+    public String getObjectId() {
+        return objectId;
+    }
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+    public String getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 
     @Override
     public int describeContents() {
@@ -85,6 +102,8 @@ public class Friend implements Parcelable,Comparable<Friend> {
         parcel.writeDouble(moneyOwed);
         parcel.writeString(name);
         parcel.writeInt(trustWorthiness);
+        parcel.writeString(objectId);
+        parcel.writeString(ownerId);
     }
 
     @Override

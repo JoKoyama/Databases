@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FriendListActivity"></activity>
+        <activity android:name=".FriendDetailActivity"/>
         <activity
             android:name=".RegistrationActivity"
             android:parentActivityName=".LoginActivity"></activity>

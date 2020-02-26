@@ -13,7 +13,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:autoText="false"
         android:ems="10"
+        android:hint="@string/friendName"
         android:inputType="textPersonName"
         android:text="@string/friendName"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,10 +28,12 @@
         android:id="@+id/textView_detail_clumsinessText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="168dp"
         android:text="@string/clumsiness"
         app:layout_constraintEnd_toEndOf="@+id/editText_detail_name"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_detail_name" />
 
     <SeekBar
@@ -47,6 +51,8 @@
         android:layout_height="51dp"
         android:layout_marginTop="48dp"
         android:text="@string/awesome"
+        android:textOff="@string/no"
+        android:textOn="@string/yes"
         app:layout_constraintStart_toStartOf="@+id/seekBar_detail_clumsinessSlider"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_detail_clumsinessSlider" />
 
@@ -122,31 +128,34 @@
         android:id="@+id/textView_detail_clumsinessMin"
         android:layout_width="31dp"
         android:layout_height="29dp"
+        android:layout_marginTop="4dp"
         android:text="@string/clumsinessMin"
         app:layout_constraintStart_toStartOf="@+id/seekBar_detail_clumsinessSlider"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_detail_clumsinessSlider" />
 
     <TextView
         android:id="@+id/textView_detail_clumsinessMax"
-        android:layout_width="27dp"
-        android:layout_height="23dp"
+        android:layout_width="28dp"
+        android:layout_height="32dp"
         android:layout_marginTop="4dp"
         android:text="@string/clumsinessMax"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_detail_clumsinessSlider"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_detail_clumsinessSlider" />
 
     <TextView
-        android:id="@+id/textView_gymFrequncyMin"
+        android:id="@+id/textView_detail_gymFrequncyMin"
         android:layout_width="35dp"
         android:layout_height="22dp"
+        android:layout_marginTop="4dp"
         android:text="@string/gymFrequencyMin"
         app:layout_constraintStart_toStartOf="@+id/seekBar_detail_gymFrequencySlider"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_detail_gymFrequencySlider" />
 
     <TextView
         android:id="@+id/textView_detail_gymFrequencyMax"
-        android:layout_width="23dp"
+        android:layout_width="37dp"
         android:layout_height="22dp"
+        android:layout_marginTop="4dp"
         android:text="@string/gymFrequencyMax"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_detail_gymFrequencySlider"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_detail_gymFrequencySlider" />

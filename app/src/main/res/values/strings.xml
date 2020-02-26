@@ -17,4 +17,6 @@
     <string name="clumsinessMax">10</string>
     <string name="gymFrequencyMin">0</string>
     <string name="gymFrequencyMax">7</string>
+    <string name="no">No</string>
+    <string name="yes">YES</string>
 </resources>
