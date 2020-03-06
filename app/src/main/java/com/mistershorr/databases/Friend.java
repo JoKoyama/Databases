@@ -3,10 +3,13 @@ package com.mistershorr.databases;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Friend implements Parcelable,Comparable<Friend> {
-    private int cumsiness;
+    private int clumsiness;
     private double gymFrequency;
-    private boolean isAwesome;
+    @SerializedName("awesome")
+    private boolean awesome;
     private double moneyOwed;
     private String name;
     private int trustWorthiness;
@@ -17,9 +20,9 @@ public class Friend implements Parcelable,Comparable<Friend> {
 
 
     protected Friend(Parcel in) {
-        cumsiness = in.readInt();
+        clumsiness = in.readInt();
         gymFrequency = in.readDouble();
-        isAwesome = in.readByte() != 0;
+        awesome = in.readByte() != 0;
         moneyOwed = in.readDouble();
         name = in.readString();
         trustWorthiness = in.readInt();
@@ -52,17 +55,17 @@ public class Friend implements Parcelable,Comparable<Friend> {
     public void setName(String name) {
         this.name = name;
     }
-    public String getMoneyOwed() {
-        return moneyOwed+"";
+    public double getMoneyOwed() {
+        return moneyOwed;
     }
     public void setMoneyOwed(double moneyOwed) {
         this.moneyOwed = moneyOwed;
     }
     public boolean isAwesome() {
-        return isAwesome;
+        return awesome;
     }
     public void setAwesome(boolean awesome) {
-        isAwesome = awesome;
+        this.awesome = awesome;
     }
     public double getGymFrequency() {
         return gymFrequency;
@@ -70,11 +73,11 @@ public class Friend implements Parcelable,Comparable<Friend> {
     public void setGymFrequency(double gymFrequency) {
         this.gymFrequency = gymFrequency;
     }
-    public int getCumsiness() {
-        return cumsiness;
+    public int getClumsiness() {
+        return clumsiness;
     }
-    public void setCumsiness(int cumsiness) {
-        this.cumsiness = cumsiness;
+    public void setClumsiness(int clumsiness) {
+        this.clumsiness = clumsiness;
     }
     public String getObjectId() {
         return objectId;
@@ -96,15 +99,16 @@ public class Friend implements Parcelable,Comparable<Friend> {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(cumsiness);
+        parcel.writeInt(clumsiness);
         parcel.writeDouble(gymFrequency);
-        parcel.writeByte((byte) (isAwesome ? 1 : 0));
+        parcel.writeByte((byte) (awesome ? 1 : 0));
         parcel.writeDouble(moneyOwed);
         parcel.writeString(name);
         parcel.writeInt(trustWorthiness);
         parcel.writeString(objectId);
         parcel.writeString(ownerId);
     }
+
 
     @Override
     public int compareTo(Friend friend) {

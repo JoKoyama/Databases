@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FriendListActivity"></activity>
-        <activity android:name=".FriendDetailActivity"/>
+        <activity android:name=".FriendDetailActivity">
+
+        </activity>
         <activity
             android:name=".RegistrationActivity"
             android:parentActivityName=".LoginActivity"></activity>
@@ -23,6 +25,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 

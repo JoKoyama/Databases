@@ -16,10 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.UserService;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +32,23 @@ public class FriendListActivity extends AppCompatActivity {
     private List<Friend> friendStringList;
     private FriendAdapter friendAdapter;
     private ListView listView;
+    private FloatingActionButton newButton;
+    private BackendlessUser user = Backendless.UserService.CurrentUser();
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_friend_list);
         listView = findViewById(R.id.listView_list_listOfFriends);
+        newButton = findViewById(R.id.floatingActionButton2);
         //search for friends that have ownerIds that match the user's objectId
         String userId = Backendless.UserService.CurrentUser().getObjectId();
         String whereClause = "ownerId = "+"'"+userId+"'";
@@ -60,15 +72,23 @@ public class FriendListActivity extends AppCompatActivity {
                         Intent targetIntent = new Intent(FriendListActivity.this,FriendDetailActivity.class);
                         targetIntent.putExtra(EXTRA_FRIEND,friendStringList.get(position));
                         startActivity(targetIntent);
-                        fileList();
 
+
+                    }
+                });
+                newButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        saveNewContact();
                     }
                 });
             }
 
+
             @Override
             public void handleFault(BackendlessFault fault) {
                 Toast.makeText(FriendListActivity.this,fault.getDetail(),Toast.LENGTH_LONG).show();
+
 
             }
         });
@@ -93,9 +113,35 @@ public class FriendListActivity extends AppCompatActivity {
             TextView textViewMoneyOwed = convertView.findViewById(R.id.textView_list_moneyOwed);
             TextView textViewTrustworthiness = convertView.findViewById(R.id.textView_list_trustworthiness);
             textViewFriendName.setText(friendList.get(position).getName());
-            textViewMoneyOwed.setText(friendList.get(position).getMoneyOwed());
-            textViewTrustworthiness.setText(" "+friendList.get(position).getTrustWorthiness());
+            textViewMoneyOwed.setText(String.format("$%,03.2f",friend.getMoneyOwed()));
+            textViewTrustworthiness.setText(String.valueOf(friendList.get(position).getTrustWorthiness()-1));
             return convertView;
         }
+    }
+    public void saveNewContact()
+    {
+        Friend friend = new Friend();
+        friend.setOwnerId(user.getUserId());
+        friend.setAwesome(false);
+        friend.setTrustWorthiness(1);
+        friend.setMoneyOwed(1);
+        friend.setGymFrequency(1);
+        friend.setClumsiness(1);
+        friend.setName("Enter Name Here");
+        // save object asynchronously
+        Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
+            public void handleResponse( Friend response )
+            {
+                Toast.makeText(FriendListActivity.this,"this worked",Toast.LENGTH_LONG).show();
+                Intent targetIntent = new Intent(FriendListActivity.this,FriendDetailActivity.class);
+                targetIntent.putExtra(EXTRA_FRIEND,response);
+                startActivity(targetIntent);
+            }
+
+            public void handleFault( BackendlessFault fault )
+            {
+               Toast.makeText(FriendListActivity.this,fault.getDetail(),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

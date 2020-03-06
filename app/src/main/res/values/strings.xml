@@ -19,4 +19,6 @@
     <string name="gymFrequencyMax">7</string>
     <string name="no">No</string>
     <string name="yes">YES</string>
+    <string name="save">Save</string>
+    <string name="dollar">$</string>
 </resources>

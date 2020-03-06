@@ -3,14 +3,16 @@ package com.mistershorr.databases;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,61 +37,40 @@ public class FriendDetailActivity extends AppCompatActivity {
     private Switch isAwesome;
     private RadioButton save;
     private Friend friend;
+    private boolean isNew;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        setContentView(R.layout.activity_detail);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_detail_wrap);
+
         Intent lastIntent = getIntent();
         friend = lastIntent.getParcelableExtra(FriendListActivity.EXTRA_FRIEND);
-        makeContact();
+
         wireWidgets();
         setString();
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
-                    public void handleResponse( Friend friend )
-                    {
-//                        friend
-//                        friend
-
-                        Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
-                            @Override
-                            public void handleResponse( Friend response )
-                            {
-                                // Contact instance has been updated
-                            }
-                            @Override
-                            public void handleFault( BackendlessFault fault )
-                            {
-                                // an error has occurred, the error code can be retrieved with fault.getCode()
-                            }
-                        } );
-                    }
-                    @Override
-                    public void handleFault( BackendlessFault fault )
-                    {
-                        // an error has occurred, the error code can be retrieved with fault.getCode()
-                    }
-                });
+                    updateContact();
             }
         });
 
     }
 
-    private void makeContact() {
-        Friend updateFriend = friend;
-    }
 
     private void setString() {
-        name.setText(friend.getName());
-        moneyOwed.setText(friend.getMoneyOwed());
-        clumsiness.setProgress(friend.getCumsiness());
-        gymFrequency.setProgress((int)(friend.getGymFrequency()*2));
-        trustworthiness.setRating(friend.getTrustWorthiness());
-        if (friend.isAwesome()==true){
-            isAwesome.isActivated();
+        if(friend != null) {
+            name.setText(friend.getName());
+            moneyOwed.setText(String.format("$%,03.2f",friend.getMoneyOwed()));
+            clumsiness.setProgress(friend.getClumsiness()-1);
+            gymFrequency.setProgress((int) ((friend.getGymFrequency()-1) * 2));
+            trustworthiness.setRating((float)((friend.getTrustWorthiness()-1)/2.0));
+            isAwesome.setChecked(friend.isAwesome());
+
+        } else {
+            friend = new Friend();
         }
     }
 
@@ -109,5 +90,31 @@ public class FriendDetailActivity extends AppCompatActivity {
         trustworthiness = findViewById(R.id.ratingBar_detail_trustRate);
         isAwesome = findViewById(R.id.switch_detail_isAwesomeSwitch);
         save = findViewById(R.id.radioButton);
+    }
+    public void updateContact()
+    {
+        friend.setName(name.getText().toString());
+        friend.setClumsiness(clumsiness.getProgress()+1);
+        friend.setGymFrequency((double)(gymFrequency.getProgress()/2+1));
+        friend.setMoneyOwed(Double.parseDouble(moneyOwed.getText().toString()
+                .replace("$","")
+                .replace(",","")
+                .trim()));
+        friend.setTrustWorthiness((int)(trustworthiness.getRating()*2)+1);
+        friend.setAwesome(isAwesome.isChecked());
+
+        Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
+            public void handleResponse( Friend savedContact )
+            {
+               // what you do when it's saved
+                Toast.makeText(FriendDetailActivity.this, "" + savedContact.isAwesome(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            @Override
+            public void handleFault( BackendlessFault fault )
+            {
+                Toast.makeText(FriendDetailActivity.this,fault.getDetail(),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
