@@ -14,7 +14,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
@@ -37,11 +39,11 @@ public class FriendDetailActivity extends AppCompatActivity {
     private Switch isAwesome;
     private RadioButton save;
     private Friend friend;
-    private boolean isNew;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_detail_wrap);
 
@@ -90,6 +92,8 @@ public class FriendDetailActivity extends AppCompatActivity {
         trustworthiness = findViewById(R.id.ratingBar_detail_trustRate);
         isAwesome = findViewById(R.id.switch_detail_isAwesomeSwitch);
         save = findViewById(R.id.radioButton);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
     }
     public void updateContact()
     {

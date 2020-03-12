@@ -21,4 +21,7 @@
     <string name="yes">YES</string>
     <string name="save">Save</string>
     <string name="dollar">$</string>
+    <string name="remove">Remove Profile</string>
+    <string name="sortByName">Sort by Name</string>
+    <string name="sortByClumsiness">Sort by Clumsiness</string>
 </resources>

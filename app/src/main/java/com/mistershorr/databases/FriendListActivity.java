@@ -6,8 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Arrays;
 import java.util.List;
 
-public class FriendListActivity extends AppCompatActivity {
+public class FriendListActivity extends AppCompatActivity{
     private Friend friend;
     public static final String EXTRA_FRIEND = "";
     private List<Friend> friendStringList;
@@ -62,6 +67,7 @@ public class FriendListActivity extends AppCompatActivity {
                 friendStringList = foundFriend;
                 friendAdapter = new FriendAdapter(friendStringList);
                 listView.setAdapter(friendAdapter);
+                registerForContextMenu(listView);
 
                 //TODO make Friend parcelable
 
@@ -69,6 +75,7 @@ public class FriendListActivity extends AppCompatActivity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
                         Intent targetIntent = new Intent(FriendListActivity.this,FriendDetailActivity.class);
                         targetIntent.putExtra(EXTRA_FRIEND,friendStringList.get(position));
                         startActivity(targetIntent);
@@ -85,6 +92,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
 
 
+
             @Override
             public void handleFault(BackendlessFault fault) {
                 Toast.makeText(FriendListActivity.this,fault.getDetail(),Toast.LENGTH_LONG).show();
@@ -92,6 +100,47 @@ public class FriendListActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.longpress, menu);
+    }
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
+        switch (item.getItemId()) {
+            case R.id.option1:
+                removeFriend(friendStringList.get(position));
+                return true;
+            default:
+                return false;
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sorting, menu);
+        return true;
+    }
+
+    private void removeFriend(final Friend delete) {
+        Backendless.Persistence.of( Friend.class ).remove( delete,
+                new AsyncCallback<Long>()
+                {
+                    public void handleResponse( Long response )
+                    {
+                        friendAdapter.remove(delete);
+                        friendAdapter.notifyDataSetChanged();
+                        Toast.makeText(FriendListActivity.this,"Friend Deleted",Toast.LENGTH_LONG).show();
+                    }
+                    public void handleFault( BackendlessFault fault )
+                    {
+                        // an error has occurred, the error code can be
+                        // retrieved with fault.getCode()
+                    }
+                } );
+
     }
 
     public class FriendAdapter extends ArrayAdapter<Friend>{
@@ -113,7 +162,7 @@ public class FriendListActivity extends AppCompatActivity {
             TextView textViewMoneyOwed = convertView.findViewById(R.id.textView_list_moneyOwed);
             TextView textViewTrustworthiness = convertView.findViewById(R.id.textView_list_trustworthiness);
             textViewFriendName.setText(friendList.get(position).getName());
-            textViewMoneyOwed.setText(String.format("$%,03.2f",friend.getMoneyOwed()));
+            textViewMoneyOwed.setText(String.valueOf(String.format("$%,03.2f",friendList.get(position).getMoneyOwed())));
             textViewTrustworthiness.setText(String.valueOf(friendList.get(position).getTrustWorthiness()-1));
             return convertView;
         }
