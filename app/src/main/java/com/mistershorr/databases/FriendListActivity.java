@@ -2,7 +2,6 @@ package com.mistershorr.databases;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,19 +20,21 @@ import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
-import com.backendless.UserService;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FriendListActivity extends AppCompatActivity{
     private Friend friend;
     public static final String EXTRA_FRIEND = "";
-    private List<Friend> friendStringList;
+    private List<Friend> friendStringListOriginal;
+    private boolean azPressed;
+    private boolean clumsinessPressed;
     private FriendAdapter friendAdapter;
     private ListView listView;
     private FloatingActionButton newButton;
@@ -64,8 +64,8 @@ public class FriendListActivity extends AppCompatActivity{
             public void handleResponse(List<Friend> foundFriend) {
                 Log.d("Loaded Friends","handleResponse" + foundFriend.toString());
                 //TODO make a custom adapter to display the friend and load the list
-                friendStringList = foundFriend;
-                friendAdapter = new FriendAdapter(friendStringList);
+                friendStringListOriginal = foundFriend;
+                friendAdapter = new FriendAdapter(friendStringListOriginal);
                 listView.setAdapter(friendAdapter);
                 registerForContextMenu(listView);
 
@@ -77,7 +77,7 @@ public class FriendListActivity extends AppCompatActivity{
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                         Intent targetIntent = new Intent(FriendListActivity.this,FriendDetailActivity.class);
-                        targetIntent.putExtra(EXTRA_FRIEND,friendStringList.get(position));
+                        targetIntent.putExtra(EXTRA_FRIEND, friendStringListOriginal.get(position));
                         startActivity(targetIntent);
 
 
@@ -101,20 +101,95 @@ public class FriendListActivity extends AppCompatActivity{
             }
         });
     }
+    public void sortByNameUp(){
+        azPressed=true;
+        Collections.sort(friendStringListOriginal, new Comparator<Friend>() {
+            @Override
+            public int compare(Friend friend, Friend t1) {
+                return friend.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+            }
+        });
+        Toast.makeText(this,"Sorted by Name Up",Toast.LENGTH_SHORT).show();
+        friendAdapter.notifyDataSetChanged();
+    }
+
+    public void sortByNameDown(){
+        azPressed=false;
+        Collections.sort(friendStringListOriginal, new Comparator<Friend>() {
+            @Override
+            public int compare(Friend friend, Friend t1) {
+                return -(friend.getName().toLowerCase().compareTo(t1.getName().toLowerCase()));
+            }
+        });
+        Toast.makeText(this,"Sorted by Name Down",Toast.LENGTH_SHORT).show();
+        friendAdapter.notifyDataSetChanged();
+    }
+
+    public void sortByMoneyOwedUp(){
+        clumsinessPressed=true;
+        Collections.sort(friendStringListOriginal, new Comparator<Friend>() {
+            @Override
+            public int compare(Friend friend, Friend t1) {
+                return (int)(friend.getMoneyOwed()-t1.getMoneyOwed());
+            }
+        });
+        Toast.makeText(this,"Sorted by Money Owed From Smallest Amount",Toast.LENGTH_SHORT).show();
+        friendAdapter.notifyDataSetChanged();
+    }
+
+    public void sortByMoneyOwedDown(){
+        clumsinessPressed=false;
+        Collections.sort(friendStringListOriginal, new Comparator<Friend>() {
+            @Override
+            public int compare(Friend friend, Friend t1) {
+                return -(int)(friend.getMoneyOwed()-t1.getMoneyOwed());
+            }
+        });
+        Toast.makeText(this,"Sorted by Money Owed From Largest Amount",Toast.LENGTH_SHORT).show();
+        friendAdapter.notifyDataSetChanged();
+    }
+
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.longpress, menu);
     }
+
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int position = info.position;
         switch (item.getItemId()) {
             case R.id.option1:
-                removeFriend(friendStringList.get(position));
+                removeFriend(friendStringListOriginal.get(position));
                 return true;
             default:
                 return false;
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.sortingOption1:
+                if(azPressed){
+                    sortByNameDown();
+                }
+                else {
+                    sortByNameUp();
+                }
+                return true;
+            case R.id.sortingOption2:
+                if (clumsinessPressed){
+                    sortByMoneyOwedDown();
+                }
+                else{
+                    sortByMoneyOwedUp();
+                }
+                return true;
+            case R.id.logout:
+                Backendless.UserService.logout();
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
     @Override

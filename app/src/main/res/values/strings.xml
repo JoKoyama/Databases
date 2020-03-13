@@ -23,5 +23,6 @@
     <string name="dollar">$</string>
     <string name="remove">Remove Profile</string>
     <string name="sortByName">Sort by Name</string>
-    <string name="sortByClumsiness">Sort by Clumsiness</string>
+    <string name="sortByMoneyOwed">Sort by Money Owed</string>
+    <string name="logout">Logout</string>
 </resources>

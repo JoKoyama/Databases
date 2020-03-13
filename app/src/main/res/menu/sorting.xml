@@ -3,6 +3,8 @@
     <item android:id="@+id/sortingOption1"
         android:title="@string/sortByName"/>
     <item android:id="@+id/sortingOption2"
-        android:title="@string/sortByClumsiness"/>
+        android:title="@string/sortByMoneyOwed"/>
+    <item android:id="@+id/logout"
+        android:title="@string/logout"/>
 
 </menu>
